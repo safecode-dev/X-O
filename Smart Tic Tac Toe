@@ -1,0 +1,460 @@
+# X O WORKING :) !!!
+
+class Game2:
+    PLAYER1 = 1
+    PLAYER2 = 2
+
+    def __init__(self, player1, player2):
+        self.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        self.player1 = player1
+        self.player2 = player2
+        self.turn = self.PLAYER1
+        self.mapping = f"""
+In order to make a move please make sure you know the number of each cell:
+
+ 1 | 2 | 3
+-----------
+ 4 | 5 | 6
+-----------
+ 7 | 8 | 9
+
+Good Luck!
+
+{self.player1} you go First:
+
+"""
+
+    def input_check(self, pos):
+        while True:
+            while pos.isdigit() is False or int(pos) < 1 or int(pos) > 9:
+                print("1 please Enter a number between 1 - 9...\n")
+                pos = input("Please choose a move (Enter a number between 1-9, make sure the place is empty): ")
+            if self.isempty(int(pos)) is False:
+                print("2 This place is full, please choose another place\n")
+                pos = input("Please choose a move (Enter a number between 1-9, make sure the place is empty): ")
+                continue
+            return int(pos)
+
+    def isempty(self, pos):
+        if pos == 1:
+            if self.board[0][0] == 0:
+                return True
+            return False
+        if pos == 2:
+            if self.board[0][1] == 0:
+                return True
+            return False
+        if pos == 3:
+            if self.board[0][2] == 0:
+                return True
+            return False
+        if pos == 4:
+            if self.board[1][0] == 0:
+                return True
+            return False
+        if pos == 5:
+            if self.board[1][1] == 0:
+                return True
+            return False
+        if pos == 6:
+            if self.board[1][2] == 0:
+                return True
+            return False
+        if pos == 7:
+            if self.board[2][0] == 0:
+                return True
+            return False
+        if pos == 8:
+            if self.board[2][1] == 0:
+                return True
+            return False
+
+        if self.board[2][2] == 0:
+            return True
+        return False
+
+    def get_move(self, player):
+        if self.turn == self.PLAYER2:
+            pos = input(
+                self.player2 + " It is your turn!!\nPlease choose a move (Enter a number bitween 1-9, make sure the place is empty): ")
+            pos = self.input_check(pos)
+            if pos == 1:
+                self.board[0][0] = 2
+            if pos == 2:
+                self.board[0][1] = 2
+            if pos == 3:
+                self.board[0][2] = 2
+            if pos == 4:
+                self.board[1][0] = 2
+            if pos == 5:
+                self.board[1][1] = 2
+            if pos == 6:
+                self.board[1][2] = 2
+            if pos == 7:
+                self.board[2][0] = 2
+            if pos == 8:
+                self.board[2][1] = 2
+            if pos == 9:
+                self.board[2][2] = 2
+        else:
+            pos = input(
+                self.player1 + " It is your turn!!\nPlease choose a move (Enter a number bitween 1-9, make sure the place is empty): ")
+            pos = self.input_check(pos)
+            if pos == 1:
+                self.board[0][0] = 1
+            if pos == 2:
+                self.board[0][1] = 1
+            if pos == 3:
+                self.board[0][2] = 1
+            if pos == 4:
+                self.board[1][0] = 1
+            if pos == 5:
+                self.board[1][1] = 1
+            if pos == 6:
+                self.board[1][2] = 1
+            if pos == 7:
+                self.board[2][0] = 1
+            if pos == 8:
+                self.board[2][1] = 1
+            if pos == 9:
+                self.board[2][2] = 1
+        return pos
+
+    def __str__(self):
+        count = 0
+        printable = ""
+        for i in self.board:
+            for j in i:
+                count += 1
+                if j == 0:
+                    printable = printable + "|   "
+                elif j == 1:
+                    printable = printable + "| X "
+                else:
+                    printable = printable + "| O "
+            if count % 3 == 0:
+                printable = printable + "\n-------------\n"
+        printable = printable[1:24] + "\n" + printable[28:51] + "\n" + printable[55:67]
+        return "\n" + printable
+
+    def comp_vic_check(self, x, y):
+        if self.vic_raw(x) or self.vic_col(y) or self.vic_diag1() or self.vic_diag2():
+            self.vic = True
+            return True
+        return False
+
+    def vic_check(self, pos):
+        x, y = self.from_pos_to_xy(pos)
+        if self.vic_raw(x) or self.vic_col(y) or self.vic_diag1() or self.vic_diag2():
+            self.vic = True
+            return True
+        return False
+
+    def vic_raw(self, x):
+        if self.board[x][0] and self.board[x][0] == self.board[x][1] == self.board[x][2]:
+            return True
+        return False
+
+    def vic_col(self, y):
+        if self.board[0][y] and self.board[0][y] == self.board[1][y] == self.board[2][y]:
+            return True
+        return False
+
+    def vic_diag1(self):
+        if self.board[0][0] and self.board[0][0] == self.board[1][1] == self.board[2][2]:
+            return True
+        return False
+
+    def vic_diag2(self):
+        if self.board[2][0] and self.board[2][0] == self.board[1][1] == self.board[0][2]:
+            return True
+        return False
+
+    def isfullboard(self):
+        for i in self.board:
+            for j in i:
+                if j == 0:
+                    return False
+        return True
+
+    def from_pos_to_xy(self, pos):
+        if pos == 1:
+            return 0, 0
+        if pos == 2:
+            return 0, 1
+        if pos == 3:
+            return 0, 2
+        if pos == 4:
+            return 1, 0
+        if pos == 5:
+            return 1, 1
+        if pos == 6:
+            return 1, 2
+        if pos == 7:
+            return 2, 0
+        if pos == 8:
+            return 2, 1
+        if pos == 9:
+            return 2, 2
+
+
+class Game1(Game2):
+    COMP = 1
+    PLAYER = 2
+
+    def __init__(self, player):
+        self.board = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+        self.player = player
+        self.turn = self.COMP
+        self.mapping = """
+In order to make a move please make sure you know the number of each location:
+
+ 1 | 2 | 3
+-----------
+ 4 | 5 | 6
+-----------
+ 7 | 8 | 9
+
+Good Luck!
+
+"""
+
+    def find_an_empty_place(self):
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == 0:
+                    return i, j
+    
+    def comp_win_move(self):
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == 0:
+                    self.board[i][j] = 1
+                    if self.comp_vic_check(i, j):
+                        return i,j
+                    self.board[i][j] = 0
+        return -1, -1
+
+    def player_win_move(self):
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == 0:
+                    self.board[i][j] = 2
+                    if self.comp_vic_check(i, j):
+                        self.board[i][j] = 1
+                        return i,j
+                    self.board[i][j] = 0
+        return -1, -1
+
+
+    def get_move(self):
+        pos = input(
+            self.player + " It is your turn!!\nPlease choose a move (Enter a number bitween 1-9, make sure the place is empty): ")
+        pos = self.input_check(pos)
+        if pos == 1:
+            self.board[0][0] = 2
+        if pos == 2:
+            self.board[0][1] = 2
+        if pos == 3:
+            self.board[0][2] = 2
+        if pos == 4:
+            self.board[1][0] = 2
+        if pos == 5:
+            self.board[1][1] = 2
+        if pos == 6:
+            self.board[1][2] = 2
+        if pos == 7:
+            self.board[2][0] = 2
+        if pos == 8:
+            self.board[2][1] = 2
+        if pos == 9:
+            self.board[2][2] = 2
+
+    def from_pos_to_xy(self, pos):
+        if pos == 1:
+            return 0, 0
+        if pos == 2:
+            return 0, 1
+        if pos == 3:
+            return 0, 2
+        if pos == 4:
+            return 1, 0
+        if pos == 5:
+            return 1, 1
+        if pos == 6:
+            return 1, 2
+        if pos == 7:
+            return 2, 0
+        if pos == 8:
+            return 2, 1
+        if pos == 9:
+            return 2, 2
+
+    def max_move(self, x, y):
+        if self.comp_vic_check(x, y):
+            return 1, x, y
+        if self.isfullboard():
+            return 0, x, y
+        x, y = self.find_an_empty_place()
+        self.board[x][y] = 2
+        answer = self.min_move(x, y)
+        self.board[x][y] = 0
+        return answer
+
+    def min_move(self, x, y):
+        if self.comp_vic_check(x, y):
+            return -1, x, y
+        if self.isfullboard():
+            return 0, x, y
+        x, y = self.find_an_empty_place()
+        self.board[x][y] = 1
+        answer = self.max_move(x, y)
+        self.board[x][y] = 0
+        return answer
+
+    def comp_vic_move(self):
+        for i in range(1, 10):
+            if self.isempty(i):
+                x, y = self.from_pos_to_xy(i)
+                self.board[x][y] = 1
+                if self.comp_vic_check(x, y):
+                    return x, y
+                self.board[x][y] = 0
+        return -1, -1
+
+    def comp_move(self, turn):
+        temp_max_answer = -3, -1, -1
+        temp_min_answer = 3, -1, -1
+        for i in range(3):
+            for j in range(3):
+                if turn == 1 and self.board[i][j] == 0:
+                    self.board[i][j] = 1
+                    if self.comp_vic_check(i, j):
+                        self.vic = True
+                        return i, j
+                    self.board[i][j] = 0
+                    if turn == 1:
+                        self.board[i][j] = 2
+                        max_answer = self.max_move(i, j)
+                        self.board[i][j] = 0
+                        if max_answer[0] < temp_max_answer[0]:
+                            max_answer = temp_max_answer
+                        turn = 2
+                    else:
+                        self.board[i][j] = 1
+                        min_answer = self.min_move(i, j)
+                        self.board[i][j] = 0
+                        if min_answer[0] > temp_min_answer[0]:
+                            min_answer = temp_min_answer
+                        turn = 1
+        self.board[max_answer[1]][max_answer[2]] = 1
+        return max_answer[1], max_answer[2]
+
+    def input_check(self, pos):
+        return super().input_check(pos)
+
+    def isempty(self, pos):
+        if pos == 1:
+            if self.board[0][0] == 0:
+                return True
+            return False
+        if pos == 2:
+            if self.board[0][1] == 0:
+                return True
+            return False
+        if pos == 3:
+            if self.board[0][2] == 0:
+                return True
+            return False
+        if pos == 4:
+            if self.board[1][0] == 0:
+                return True
+            return False
+        if pos == 5:
+            if self.board[1][1] == 0:
+                return True
+            return False
+        if pos == 6:
+            if self.board[1][2] == 0:
+                return True
+            return False
+        if pos == 7:
+            if self.board[2][0] == 0:
+                return True
+            return False
+        if pos == 8:
+            if self.board[2][1] == 0:
+                return True
+            return False
+
+        if self.board[2][2] == 0:
+            return True
+        return False
+
+    def comp_vic_check(self, x, y):
+        if self.vic_raw(x) or self.vic_col(y) or self.vic_diag1() or self.vic_diag2():
+            self.vic = True
+            return True
+        return False
+
+
+answer = "y"
+while answer == "y" or answer == "Y" or answer == "yes" or answer == "Yes":
+    if input("Welcome To The Best Tic Tac Tuo Ever\nBecause I Never Looses... :)\n\nPlease Choose an Option:\n\n1. Comp VS Player\n2. Player VS Player\n ") == "2":
+        player1 = input("First player, What is your name? ")
+        player2 = input("Second player, What is yor name? ")
+        x_o = Game2(player1, player2)
+        print(x_o.mapping)
+        print(x_o)
+        play = True
+        while play:
+            x_o.turn = x_o.PLAYER1
+            pos = x_o.get_move(x_o.turn)
+            print(x_o)
+            if x_o.vic_check(pos):
+                print(f'{x_o.player1} Glorious Victory ! ! ! :) ')
+                break
+            if x_o.isfullboard():
+                play = False
+                break
+
+            x_o.turn = x_o.PLAYER2
+            pos = x_o.get_move(x_o.turn)
+            print(x_o)
+            if x_o.vic_check(pos):
+                print(f'{x_o.player2} Glorious Victory ! ! ! :) ')
+                break
+            if x_o.isfullboard():
+                play = False
+                break
+        if not play:
+            print("It's a TIE!! :-| ")
+
+    else:  # COMP VS PLAYER
+        user = input("Hello, What is your Name? ")
+        x_o = Game1(user)
+        print(x_o.mapping)
+        play = True
+        print(x_o)
+        print("I Go First :-)\n")
+        while play:
+            x, y = x_o.comp_win_move()
+            if x == -1:
+                x, y = x_o.player_win_move()
+                if x == -1:
+                    x, y = x_o.comp_move(x_o.COMP)
+            print(x_o)
+            if x_o.comp_vic_check(x, y):
+                print("I Won ! ! ! :) ")
+                break
+            if x_o.isfullboard():
+                play = False
+                break
+            x_o.get_move()
+            print(x_o)
+            if x_o.isfullboard():
+                play = False
+                break
+        if not play:
+            print("it's a TIE!! :-| ")
+    answer = input("Do you want another game? ")
